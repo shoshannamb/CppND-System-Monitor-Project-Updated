@@ -6,6 +6,7 @@
 
 #include "linux_parser.h"
 
+using std::map;
 using std::stof;
 using std::string;
 using std::to_string;
@@ -120,7 +121,30 @@ long LinuxParser::ActiveJiffies() { return 0; }
 long LinuxParser::IdleJiffies() { return 0; }
 
 // TODO: Read and return CPU utilization
-vector<string> LinuxParser::CpuUtilization() { return {}; }
+map<string, long> LinuxParser::CpuUtilization() {
+  std::string line, cpu, user, nice, system, idle, iowait, irq, softirq, steal,
+      guest, guest_nice;
+  map<string, long> cpuStats;
+  std::ifstream stream(kProcDirectory + kStatFilename);
+  if (stream.is_open()) {
+    while (std::getline(stream, line)) {
+      std::istringstream linestream(line);
+      linestream >> cpu >> user >> nice >> system >> idle >> iowait >> irq >>
+          softirq >> steal >> guest >> guest_nice;
+      cpuStats["user"] = std::stol(user);
+      cpuStats["nice"] = std::stol(nice);
+      cpuStats["system"] = std::stol(system);
+      cpuStats["idle"] = std::stol(idle);
+      cpuStats["iowait"] = std::stol(iowait);
+      cpuStats["softirq"] = std::stol(softirq);
+      cpuStats["steal"] = std::stol(steal);
+      cpuStats["guest"] = std::stol(guest);
+      cpuStats["guest_nice"] = std::stol(guest_nice);
+      return cpuStats;
+    }
+  }
+  return {};
+}
 
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() {
