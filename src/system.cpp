@@ -15,10 +15,17 @@ using std::string;
 using std::vector;
 
 System::System() {
-  this->operatingSystem_ = LinuxParser::OperatingSystem();
-  this->kernel_ = LinuxParser::Kernel();
-  auto cpu = new Processor();
-  this->cpu_ = *cpu;
+  operatingSystem_ = LinuxParser::OperatingSystem();
+  kernel_ = LinuxParser::Kernel();
+  auto cpu = Processor();
+  cpu_ = cpu;
+  auto processes = new vector<Process>;
+  auto pids = LinuxParser::Pids();
+  for (int pid : pids) {
+    Process process = Process(pid);
+    processes->push_back(process);
+  }
+  processes_ = *processes;
 }
 
 // TODO: Return the system's CPU

@@ -7,7 +7,7 @@ float Processor::Utilization() {
   long idle = cpuStats["idle"] + cpuStats["iowait"];
   long nonIdle = cpuStats["user"] + cpuStats["nice"] + cpuStats["system"] +
                  cpuStats["irq"] + cpuStats["softirq"] + cpuStats["steal"];
-  long total = idle + nonIdle;
+  float total = idle + nonIdle;
   float diff = total - idle;
   return diff / total;
 }
